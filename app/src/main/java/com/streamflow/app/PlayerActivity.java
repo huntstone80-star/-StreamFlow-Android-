@@ -13,7 +13,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.Player;
@@ -308,6 +307,7 @@ public class PlayerActivity extends android.app.Activity {
         showControls();
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @SuppressLint("UseCompatLoadingForDrawables")
     private void showPlayPauseAnimation() {
         if (player == null) return;
