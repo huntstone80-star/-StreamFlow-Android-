@@ -14,6 +14,8 @@ jobs:
         uses: android-actions/setup-android@v3
       - name: Accept SDK licenses
         run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+      - name: Make gradlew executable
+        run: chmod +x gradlew
       - name: Build APK
         run: ./gradlew assembleDebug --no-daemon
       - name: Upload APK
