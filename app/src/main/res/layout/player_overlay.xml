@@ -122,10 +122,9 @@
         </RelativeLayout>
 
         <!-- Time row -->
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginBottom="12dp">
 
             <TextView
@@ -143,10 +142,10 @@
                 android:layout_height="wrap_content"
                 android:textColor="#888888"
                 android:textSize="12sp"
-                android:layout_marginLeft="auto"
+                android:layout_alignParentRight="true"
                 android:text="0:00"
                 android:fontFamily="sans-serif" />
-        </LinearLayout>
+        </RelativeLayout>
 
         <!-- Controls row -->
         <LinearLayout
