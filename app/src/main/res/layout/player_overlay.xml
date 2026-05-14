@@ -3,50 +3,337 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/player_top_bar"
+    <!-- Top bar with gradient -->
+    <RelativeLayout
+        android:id="@+id/top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
         android:background="@drawable/player_gradient_top">
 
         <TextView
-            android:id="@+id/player_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/btn_back"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:gravity="center"
+            android:textSize="28sp"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:maxLines="1"
-            android:ellipsize="end"
-            android:text="Loading..." />
+            android:text="&#x2715;"
+            android:background="@drawable/btn_circle_bg"
+            android:focusable="true"
+            android:nextFocusDown="@+id/btn_play_pause_center" />
 
-        <TextView
-            android:id="@+id/player_episode_counter"
+        <LinearLayout
+            android:id="@+id/title_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#AAAAAA"
-            android:textSize="14sp"
-            android:layout_marginTop="4dp"
-            android:text="-" />
-    </LinearLayout>
+            android:orientation="vertical"
+            android:layout_centerHorizontal="true"
+            android:gravity="center">
 
-    <LinearLayout
-        android:id="@+id/player_bottom_bar"
+            <TextView
+                android:id="@+id/player_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="22sp"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:text="Title"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/player_episode_counter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#AAAAAA"
+                    android:textSize="15sp"
+                    android:text="1 / 10" />
+
+                <TextView
+                    android:id="@+id/player_season_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#888888"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="12dp"
+                    android:text="" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Empty view to balance the layout -->
+        <View
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+
+    <!-- Center play/pause icon -->
+    <ImageView
+        android:id="@+id/play_pause_center"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:background="@drawable/btn_circle_large_bg"
+        android:padding="24dp"
+        android:scaleType="centerInside" />
+
+    <!-- Bottom bar with gradient -->
+    <RelativeLayout
+        android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="horizontal"
-        android:gravity="center"
-        android:padding="16dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="32dp"
+        android:paddingLeft="48dp"
+        android:paddingRight="48dp"
         android:background="@drawable/player_gradient_bottom">
 
+        <!-- Progress bar -->
+        <FrameLayout
+            android:id="@+id/progress_container"
+            android:layout_width="match_parent"
+            android:layout_height="6dp"
+            android:layout_marginBottom="16dp"
+            android:background="#33FFFFFF">
+
+            <View
+                android:id="@+id/progress_played"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:background="#E50914" />
+
+            <View
+                android:id="@+id/progress_buffered"
+                android:layout_height="match_parent"
+                android:background="#55FFFFFF"
+                android:layout_gravity="left" />
+
+            <View
+                android:id="@+id/progress_thumb"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_gravity="center_vertical|left"
+                android:background="@drawable/thumb_circle"
+                android:translationX="-7dp" />
+        </FrameLayout>
+
+        <!-- Time labels -->
+        <LinearLayout
+            android:id="@+id/time_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/progress_container"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/current_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:text="0:00" />
+
+            <TextView
+                android:id="@+id/remaining_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#888888"
+                android:textSize="14sp"
+                android:layout_marginLeft="8dp"
+                android:text="-0:00" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/total_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#AAAAAA"
+                android:textSize="14sp"
+                android:text="0:00" />
+        </LinearLayout>
+
+        <!-- Control buttons row -->
+        <LinearLayout
+            android:id="@+id/controls_row"
+            android:layout_width="wrap_content"
+            android:layout_height="56dp"
+            android:layout_below="@id/time_row"
+            android:layout_marginTop="12dp"
+            android:layout_centerHorizontal="true"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/btn_previous"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:textColor="#FFFFFF"
+                android:text="&#x23EE;"
+                android:background="@drawable/btn_circle_bg"
+                android:focusable="true"
+                android:nextFocusLeft="@id/btn_back"
+                android:nextFocusRight="@id/btn_rewind" />
+
+            <TextView
+                android:id="@+id/btn_rewind"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:textColor="#FFFFFF"
+                android:text="&#x23EA;"
+                android:layout_marginLeft="16dp"
+                android:background="@drawable/btn_circle_bg"
+                android:focusable="true"
+                android:nextFocusLeft="@id/btn_previous"
+                android:nextFocusRight="@id/btn_play_pause" />
+
+            <TextView
+                android:id="@+id/btn_play_pause"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:gravity="center"
+                android:textSize="32sp"
+                android:textColor="#FFFFFF"
+                android:text="&#x25B6;"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/btn_circle_large_bg"
+                android:focusable="true"
+                android:nextFocusLeft="@id/btn_rewind"
+                android:nextFocusRight="@id/btn_forward" />
+
+            <TextView
+                android:id="@+id/btn_forward"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:textColor="#FFFFFF"
+                android:text="&#x23E9;"
+                android:layout_marginRight="16dp"
+                android:background="@drawable/btn_circle_bg"
+                android:focusable="true"
+                android:nextFocusLeft="@id/btn_play_pause"
+                android:nextFocusRight="@id/btn_next" />
+
+            <TextView
+                android:id="@+id/btn_next"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:gravity="center"
+                android:textSize="24sp"
+                android:textColor="#FFFFFF"
+                android:text="&#x23ED;"
+                android:background="@drawable/btn_circle_bg"
+                android:focusable="true"
+                android:nextFocusLeft="@id/btn_forward"
+                android:nextFocusRight="@id/btn_rewind" />
+        </LinearLayout>
+
+        <!-- Hint text -->
         <TextView
             android:id="@+id/hint_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#888888"
+            android:layout_below="@id/controls_row"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="12dp"
+            android:textColor="#666666"
             android:textSize="12sp"
-            android:text="\u2190\u2192 Seek  \u2191\u2193 Volume  OK Play/Pause  \u23CE Back" />
+            android:text="\u2190\u2192 Seek  \u2191\u2193 Volume  OK Play/Pause  \u23CE Back"
+            android:visibility="gone" />
+    </RelativeLayout>
+
+    <!-- Volume indicator (right side) -->
+    <LinearLayout
+        android:id="@+id/volume_indicator"
+        android:layout_width="48dp"
+        android:layout_height="180dp"
+        android:layout_gravity="right|center_vertical"
+        android:layout_marginRight="24dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#CC000000"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="VOL"
+            android:textColor="#888888"
+            android:textSize="10sp" />
+
+        <FrameLayout
+            android:layout_width="6dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="#33FFFFFF">
+
+            <View
+                android:id="@+id/volume_level"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="bottom"
+                android:background="#FFFFFF" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/volume_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:text="50%" />
     </LinearLayout>
+
+    <!-- Episode change overlay -->
+    <RelativeLayout
+        android:id="@+id/episode_change_overlay"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="#CC000000"
+        android:padding="24dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/episode_change_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFFFF"
+            android:textSize="18sp"
+            android:text="Next Episode" />
+
+        <TextView
+            android:id="@+id/episode_change_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/episode_change_title"
+            android:layout_marginTop="8dp"
+            android:textColor="#AAAAAA"
+            android:textSize="14sp"
+            android:text="Loading..." />
+    </RelativeLayout>
 </FrameLayout>
