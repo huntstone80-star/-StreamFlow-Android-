@@ -307,8 +307,6 @@ public class PlayerActivity extends android.app.Activity {
         showControls();
     }
 
-    @SuppressLint("UseCompatLoadingForDrawables")
-    @SuppressLint("UseCompatLoadingForDrawables")
     private void showPlayPauseAnimation() {
         if (player == null) return;
         playPauseCenter.setVisibility(View.VISIBLE);
