@@ -2,7 +2,6 @@ package com.streamflow.app;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -309,6 +308,7 @@ public class PlayerActivity extends android.app.Activity {
         showControls();
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     private void showPlayPauseAnimation() {
         if (player == null) return;
         playPauseCenter.setVisibility(View.VISIBLE);
@@ -316,9 +316,8 @@ public class PlayerActivity extends android.app.Activity {
         playPauseCenter.setScaleX(1.5f);
         playPauseCenter.setScaleY(1.5f);
 
-        Drawable icon = ContextCompat.getDrawable(this,
-            player.isPlaying() ? android.R.drawable.ic_media_play : android.R.drawable.ic_media_pause);
-        playPauseCenter.setImageDrawable(icon);
+        playPauseCenter.setImageDrawable(getDrawable(
+            player.isPlaying() ? android.R.drawable.ic_media_play : android.R.drawable.ic_media_pause));
 
         playPauseCenter.animate()
                 .alpha(0f)
