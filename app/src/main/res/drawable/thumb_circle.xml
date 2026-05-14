@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- StreamFlow progress thumb -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
     <solid android:color="#E50914" />
-    <size android:width="14dp" android:height="14dp" />
+    <size android:width="12dp" android:height="12dp" />
 </shape>

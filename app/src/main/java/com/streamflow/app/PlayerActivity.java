@@ -42,8 +42,8 @@ public class PlayerActivity extends android.app.Activity {
 
     // UI elements
     private View controlsOverlay, loadingOverlay, topBar, bottomBar;
-    private TextView titleText, episodeCounter, seasonInfo;
-    private TextView currentTime, remainingTime, totalTime;
+    private TextView titleText, episodeCounter;
+    private TextView currentTime, totalTime;
     private TextView btnPlayPause, btnPrevious, btnNext, btnRewind, btnForward, btnBack;
     private ImageView playPauseCenter;
     private View progressPlayed, progressBuffered, progressThumb;
@@ -111,9 +111,7 @@ public class PlayerActivity extends android.app.Activity {
         bottomBar = controlsOverlay.findViewById(R.id.bottom_bar);
         titleText = controlsOverlay.findViewById(R.id.player_title);
         episodeCounter = controlsOverlay.findViewById(R.id.player_episode_counter);
-        seasonInfo = controlsOverlay.findViewById(R.id.player_season_info);
         currentTime = controlsOverlay.findViewById(R.id.current_time);
-        remainingTime = controlsOverlay.findViewById(R.id.remaining_time);
         totalTime = controlsOverlay.findViewById(R.id.total_time);
         btnPlayPause = controlsOverlay.findViewById(R.id.btn_play_pause);
         btnPrevious = controlsOverlay.findViewById(R.id.btn_previous);
@@ -414,7 +412,6 @@ public class PlayerActivity extends android.app.Activity {
         // Time labels
         currentTime.setText(formatTime(position));
         totalTime.setText(formatTime(duration));
-        remainingTime.setText("-" + formatTime(duration - position));
     }
 
     private String formatTime(long ms) {
