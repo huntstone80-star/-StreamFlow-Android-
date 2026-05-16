@@ -138,7 +138,7 @@ public class MainActivity extends Activity {
         layout.addView(webView, params);
         setContentView(layout);
 
-        webView.loadUrl("http://192.168.100.23:3001?v=3");
+        webView.loadUrl("http://192.168.100.23:3001?v=4");
     }
 
     @Override
