@@ -1,9 +1,9 @@
 apply plugin: 'com.android.application'
 android {
-    namespace 'com.streamflow.app'
+    namespace 'com.novafame.app'
     compileSdk 35
     defaultConfig {
-        applicationId 'com.streamflow.app'
+        applicationId 'com.novafame.app'
         minSdk 21
         targetSdk 35
         versionCode 2

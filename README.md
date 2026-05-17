@@ -1,9 +1,9 @@
-# StreamFlow Android
+# Novafame Android
 
-Native Android TV app with ExoPlayer for streaming media from a local server.
+Native Android TV app with ExoPlayer for streaming media from a local NovaFlow server.
 
 ## Features
-- WebView-based UI connecting to your StreamFlow server
+- WebView-based UI connecting to your NovaFlow server
 - Native ExoPlayer with TV remote d-pad controls
 - Auto-play next episode
 - Subtitle support

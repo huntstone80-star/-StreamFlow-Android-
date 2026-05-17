@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- StreamFlow Player Overlay - matches website design language -->
+<!-- Novafame Player Overlay -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -25,7 +25,7 @@
             android:textSize="22sp"
             android:textColor="#FFFFFF"
             android:text="&#x2715;"
-            android:background="@drawable/streamflow_btn_small"
+            android:background="@drawable/novafame_btn_small"
             android:focusable="true"
             android:nextFocusDown="@+id/btn_play_pause" />
 
@@ -44,7 +44,7 @@
                 android:textSize="20sp"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:text="StreamFlow"
+                android:text="Novafame"
                 android:fontFamily="sans-serif-medium" />
 
             <TextView
@@ -65,7 +65,7 @@
         android:layout_height="80dp"
         android:layout_gravity="center"
         android:visibility="gone"
-        android:background="@drawable/streamflow_btn_large"
+        android:background="@drawable/novafame_btn_large"
         android:padding="20dp"
         android:scaleType="centerInside" />
 
@@ -165,7 +165,7 @@
                 android:textSize="18sp"
                 android:textColor="#FFFFFF"
                 android:text="\u23EE"
-                android:background="@drawable/streamflow_btn_small"
+                android:background="@drawable/novafame_btn_small"
                 android:focusable="true"
                 android:nextFocusLeft="@id/btn_back"
                 android:nextFocusRight="@id/btn_rewind" />
@@ -179,7 +179,7 @@
                 android:textColor="#FFFFFF"
                 android:text="\u23EA 10s"
                 android:layout_marginLeft="8dp"
-                android:background="@drawable/streamflow_btn_small"
+                android:background="@drawable/novafame_btn_small"
                 android:focusable="true"
                 android:nextFocusLeft="@id/btn_previous"
                 android:nextFocusRight="@id/btn_play_pause" />
@@ -194,7 +194,7 @@
                 android:text="\u25B6"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
-                android:background="@drawable/streamflow_btn_play"
+                android:background="@drawable/novafame_btn_play"
                 android:focusable="true"
                 android:nextFocusLeft="@id/btn_rewind"
                 android:nextFocusRight="@id/btn_forward" />
@@ -208,7 +208,7 @@
                 android:textColor="#FFFFFF"
                 android:text="30s \u23E9"
                 android:layout_marginRight="8dp"
-                android:background="@drawable/streamflow_btn_small"
+                android:background="@drawable/novafame_btn_small"
                 android:focusable="true"
                 android:nextFocusLeft="@id/btn_play_pause"
                 android:nextFocusRight="@id/btn_next" />
@@ -221,7 +221,7 @@
                 android:textSize="18sp"
                 android:textColor="#FFFFFF"
                 android:text="\u23ED"
-                android:background="@drawable/streamflow_btn_small"
+                android:background="@drawable/novafame_btn_small"
                 android:focusable="true"
                 android:nextFocusLeft="@id/btn_forward"
                 android:nextFocusRight="@id/btn_previous" />

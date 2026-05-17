@@ -1,5 +1,5 @@
 ═══════════════════════════════════════════
- StreamFlow Android TV APK v2.0
+ Novafame Android TV APK v2.0
 ═══════════════════════════════════════════
  Features:
  - Native ExoPlayer (no intent:// jump, seamless playback)
@@ -20,18 +20,18 @@
 ═══════════════════════════════════════════
  BUILD WITH ANDROID STUDIO (Recommended)
 ═══════════════════════════════════════════
-1. Open Android Studio → "Open existing project"
-2. Select this folder (StreamFlow-Android)
-3. Let Gradle sync (downloads dependencies)
-4. Build → Build Bundle(s) / APK → Build APK
-5. APK at app/build/outputs/apk/debug/
-6. Sideload on TV
+ 1. Open Android Studio → "Open existing project"
+ 2. Select this folder (Novafame-Android)
+ 3. Let Gradle sync (downloads dependencies)
+ 4. Build → Build Bundle(s) / APK → Build APK
+ 5. APK at app/build/outputs/apk/debug/
+ 6. Sideload on TV
 
 ═══════════════════════════════════════════
  ONLINE APK BUILDER
 ═══════════════════════════════════════════
-Zip this folder and upload to freewebtoapk.com
-Use settings:
-- URL: http://192.168.100.23:3001
-- Orientation: Landscape
-- External Links: Open in browser
+ Zip this folder and upload to freewebtoapk.com
+ Use settings:
+ - URL: http://192.168.100.23:3001
+ - Orientation: Landscape
+ - External Links: Open in browser

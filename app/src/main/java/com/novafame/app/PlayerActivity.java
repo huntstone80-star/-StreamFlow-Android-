@@ -1,4 +1,4 @@
-package com.streamflow.app;
+package com.novafame.app;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;

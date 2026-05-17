@@ -1,20 +1,14 @@
-package com.streamflow.app;
+package com.novafame.app;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.webkit.DownloadListener;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -26,13 +20,11 @@ import android.widget.Toast;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.File;
+import java.net.URLEncoder;
 
 public class MainActivity extends Activity {
     private WebView webView;
     private View loadingView;
-    private long lastDownloadId = -1;
-    private BroadcastReceiver downloadReceiver;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -60,8 +52,8 @@ public class MainActivity extends Activity {
 
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setDomStorageEnabled(true);
-        webView.getSettings().setAllowFileAccess(true);
-        webView.getSettings().setAllowContentAccess(true);
+        webView.getSettings().setAllowFileAccess(false);
+        webView.getSettings().setAllowContentAccess(false);
         webView.getSettings().setMixedContentMode(
                 android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
         webView.getSettings().setUseWideViewPort(true);
@@ -85,93 +77,7 @@ public class MainActivity extends Activity {
                 intent.putExtra("episodes", episodesJson);
                 startActivity(intent);
             }
-
-            @JavascriptInterface
-            public void downloadVideo(String url, String title) {
-                try {
-                    DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-                    DownloadManager.Request req = new DownloadManager.Request(Uri.parse(url));
-                    String filename = title != null && !title.isEmpty() ? title : "download_" + System.currentTimeMillis();
-                    if (!filename.endsWith(".apk") && !filename.contains(".")) filename += ".mp4";
-                    req.setTitle(filename);
-                    req.setDescription("Downloading video");
-                    req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                    req.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
-                    req.setAllowedOverMetered(true);
-                    req.setAllowedOverRoaming(true);
-                    lastDownloadId = dm.enqueue(req);
-                } catch (Exception e) {
-                    runOnUiThread(() -> Toast.makeText(MainActivity.this,
-                            "Download failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
-                }
-            }
         }, "AndroidBridge");
-
-        // Handle APK downloads for in-app update
-        webView.setDownloadListener(new DownloadListener() {
-            @Override
-            public void onDownloadStart(String url, String userAgent, String contentDisposition,
-                                        String mimetype, long contentLength) {
-                if (url.endsWith(".apk") || (mimetype != null && mimetype.contains("vnd.android.package-archive"))) {
-                    try {
-                        DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-                        DownloadManager.Request req = new DownloadManager.Request(Uri.parse(url));
-                        String filename = "StreamFlow-Update.apk";
-                        req.setTitle("StreamFlow APK");
-                        req.setDescription("Downloading APK update");
-                        req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-                        req.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, filename);
-                        req.setAllowedOverMetered(true);
-                        req.setAllowedOverRoaming(true);
-                        lastDownloadId = dm.enqueue(req);
-                        Toast.makeText(MainActivity.this, "APK downloading...", Toast.LENGTH_SHORT).show();
-                    } catch (Exception e) {
-                        Toast.makeText(MainActivity.this, "APK download failed", Toast.LENGTH_LONG).show();
-                    }
-                } else {
-                    // Fallback: open in browser for non-APK files
-                    try {
-                        Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                        startActivity(i);
-                    } catch (Exception e) {
-                        Toast.makeText(MainActivity.this, "Cannot open link", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-        });
-
-        // Broadcast receiver to trigger APK install when download completes
-        downloadReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
-                if (id == lastDownloadId) {
-                    DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-                    DownloadManager.Query q = new DownloadManager.Query();
-                    q.setFilterById(id);
-                    android.database.Cursor c = dm.query(q);
-                    if (c != null && c.moveToFirst()) {
-                        int status = c.getInt(c.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
-                        int reason = c.getInt(c.getColumnIndexOrThrow(DownloadManager.COLUMN_REASON));
-                        String localUri = c.getString(c.getColumnIndexOrThrow(DownloadManager.COLUMN_LOCAL_URI));
-                        c.close();
-                        if (status == DownloadManager.STATUS_SUCCESSFUL && localUri != null) {
-                            String path = localUri.replace("file://", "");
-                            File apkFile = new File(path);
-                            if (apkFile.exists() && apkFile.getName().endsWith(".apk")) {
-                                Intent install = new Intent(Intent.ACTION_VIEW);
-                                install.setDataAndType(Uri.fromFile(apkFile),
-                                        "application/vnd.android.package-archive");
-                                install.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK
-                                        | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                                startActivity(install);
-                            }
-                        }
-                    }
-                }
-            }
-        };
-        registerReceiver(downloadReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
         webView.setWebViewClient(new WebViewClient() {
             @Override
@@ -193,6 +99,7 @@ public class MainActivity extends Activity {
                     try {
                         Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
                         if (intent != null) {
+                            // Try to convert intent:// to native PlayerActivity
                             String type = intent.getType();
                             if (type != null && type.startsWith("video/")) {
                                 String data = intent.getDataString();
@@ -207,11 +114,8 @@ public class MainActivity extends Activity {
                             return true;
                         }
                     } catch (Exception e) {
+                        // fallback
                     }
-                }
-                if (url.endsWith(".apk")) {
-                    webView.getDownloadListener().onDownloadStart(url, null, null, null, 0);
-                    return true;
                 }
                 if (url.startsWith("http://") || url.startsWith("https://")) {
                     view.loadUrl(url);
@@ -234,7 +138,7 @@ public class MainActivity extends Activity {
         layout.addView(webView, params);
         setContentView(layout);
 
-        webView.loadUrl("http://192.168.100.23:3001?v=5");
+        webView.loadUrl("http://192.168.100.23:3001?v=3");
     }
 
     @Override
@@ -256,9 +160,6 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        if (downloadReceiver != null) {
-            try { unregisterReceiver(downloadReceiver); } catch (Exception e) {}
-        }
         if (webView != null) {
             webView.destroy();
             webView = null;
