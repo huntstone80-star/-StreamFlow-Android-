@@ -31,8 +31,10 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: app/build/outputs/apk/debug/app-debug.apk
-          tag: latest
-          name: "Novafame Latest APK"
+          tag: novafame-latest
+          name: "Novafame APK"
+          body: "Latest Novafame Android TV APK build"
           allowUpdates: true
           replacesArtifacts: true
+          makeLatest: true
           token: ${{ secrets.GITHUB_TOKEN }}
