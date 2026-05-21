@@ -63,10 +63,11 @@ public class MainActivity extends Activity {
 
         webView.addJavascriptInterface(new Object() {
             @JavascriptInterface
-            public void playVideo(String url, String title, String subtitlesJson) {
+            public void playVideo(String url, String title, String mediaId, String subtitlesJson) {
                 Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
                 intent.putExtra("url", url);
                 intent.putExtra("title", title != null ? title : "");
+                intent.putExtra("mediaId", mediaId != null ? mediaId : "");
                 intent.putExtra("subtitles", subtitlesJson != null ? subtitlesJson : "");
                 startActivity(intent);
             }

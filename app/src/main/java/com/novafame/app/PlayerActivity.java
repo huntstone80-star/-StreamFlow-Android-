@@ -14,6 +14,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.Player;
@@ -40,6 +44,10 @@ public class PlayerActivity extends android.app.Activity {
     private int currentEpisodeIndex = 0;
     private boolean controlsVisible = true;
     private boolean isSeeking = false;
+
+    private String mediaId = "";
+    private Handler saveHandler = new Handler();
+    private Runnable saveRunnable;
 
     // UI elements
     private View controlsOverlay, loadingOverlay, topBar, bottomBar;
@@ -183,6 +191,8 @@ public class PlayerActivity extends android.app.Activity {
     private void parseIntent() {
         String url = getIntent().getStringExtra("url");
         String title = getIntent().getStringExtra("title");
+        mediaId = getIntent().getStringExtra("mediaId");
+        if (mediaId == null) mediaId = "";
         String subtitlesJson = getIntent().getStringExtra("subtitles");
         String episodesJson = getIntent().getStringExtra("episodes");
 
@@ -246,7 +256,34 @@ public class PlayerActivity extends android.app.Activity {
         };
 
         startProgressUpdates();
+        startSaveProgressTimer();
         loadCurrentEpisode();
+    }
+
+    private void startSaveProgressTimer() {
+        if (mediaId.isEmpty()) return;
+        saveRunnable = () -> { saveProgressToServer(false); saveHandler.postDelayed(saveRunnable, 15000); };
+        saveHandler.postDelayed(saveRunnable, 15000);
+    }
+
+    private void saveProgressToServer(boolean completed) {
+        if (player == null || mediaId.isEmpty()) return;
+        final long pos = player.getCurrentPosition();
+        final long dur = player.getDuration();
+        if (dur <= 0) return;
+        new Thread(() -> {
+            try {
+                URL url = new URL("http://192.168.100.23:3001/api/media/history");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("POST");
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setDoOutput(true);
+                String json = String.format("{\"mediaId\":\"%s\",\"position\":%d,\"duration\":%d,\"completed\":%b}", mediaId, pos, dur, completed);
+                try (OutputStream os = conn.getOutputStream()) { os.write(json.getBytes()); }
+                conn.getResponseCode();
+                conn.disconnect();
+            } catch (Exception ignored) {}
+        }).start();
     }
 
     private void loadCurrentEpisode() {
@@ -293,7 +330,48 @@ public class PlayerActivity extends android.app.Activity {
 
         player.setMediaItem(builder.build());
         player.prepare();
+        fetchAndResume();
         showControls();
+    }
+
+    private void fetchAndResume() {
+        if (mediaId.isEmpty()) return;
+        new Thread(() -> {
+            try {
+                URL url = new URL("http://192.168.100.23:3001/api/media/" + mediaId);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(5000);
+                int code = conn.getResponseCode();
+                if (code != 200) { conn.disconnect(); return; }
+                java.util.Scanner s = new java.util.Scanner(conn.getInputStream()).useDelimiter("\\A");
+                String resp = s.hasNext() ? s.next() : "";
+                conn.disconnect();
+                // No saved position in media endpoint, check watch_history instead
+            } catch (Exception ignored) {}
+            try {
+                URL url = new URL("http://192.168.100.23:3001/api/media/history/continue");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setConnectTimeout(5000);
+                int code = conn.getResponseCode();
+                if (code != 200) { conn.disconnect(); return; }
+                java.util.Scanner s = new java.util.Scanner(conn.getInputStream()).useDelimiter("\\A");
+                String resp = s.hasNext() ? s.next() : "";
+                conn.disconnect();
+                org.json.JSONArray arr = new org.json.JSONArray(resp);
+                for (int i = 0; i < arr.length(); i++) {
+                    org.json.JSONObject item = arr.getJSONObject(i);
+                    if (item.optString("id", "").equals(mediaId) || item.optString("media_id", "").equals(mediaId)) {
+                        final long pos = (long)(item.optDouble("resume_position", 0) * 1000);
+                        if (pos > 5000) {
+                            runOnUiThread(() -> player.seekTo(pos));
+                        }
+                        break;
+                    }
+                }
+            } catch (Exception ignored) {}
+        }).start();
     }
 
     private void togglePlayPause() {
@@ -514,11 +592,14 @@ public class PlayerActivity extends android.app.Activity {
     @Override
     protected void onPause() {
         super.onPause();
+        saveProgressToServer(false);
         if (player != null) player.pause();
     }
 
     @Override
     protected void onDestroy() {
+        saveProgressToServer(true);
+        saveHandler.removeCallbacksAndMessages(null);
         if (player != null) { player.release(); player = null; }
         progressHandler.removeCallbacksAndMessages(null);
         controlsHandler.removeCallbacksAndMessages(null);
