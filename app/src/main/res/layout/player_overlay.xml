@@ -117,7 +117,7 @@
                     android:layout_gravity="center_vertical|left"
                     android:background="@drawable/thumb_circle"
                     android:translationX="-6dp"
-                    android:visibility="invisible" />
+                    android:visibility="visible" />
             </FrameLayout>
         </RelativeLayout>
 

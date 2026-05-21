@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -169,12 +170,13 @@ public class PlayerActivity extends android.app.Activity {
             v.setScaleY(hasFocus ? 1.15f : 1f);
         });
 
-        progressContainer.setOnClickListener(v -> {
-            if (player == null) return;
-            float x = progressContainer.getX() > 0 ? (v.getX() - progressContainer.getX()) : v.getX();
+        progressContainer.setOnTouchListener((v, event) -> {
+            if (player == null) return true;
+            float x = event.getX();
             float ratio = Math.max(0, Math.min(1, x / progressContainer.getWidth()));
             player.seekTo((long)(ratio * player.getDuration()));
             showControls();
+            return true;
         });
     }
 
@@ -327,9 +329,9 @@ public class PlayerActivity extends android.app.Activity {
     private void updatePlayPauseIcon() {
         if (player == null) return;
         if (player.isPlaying()) {
-            btnPlayPause.setText("\u25B6");
-        } else {
             btnPlayPause.setText("\u23F8");
+        } else {
+            btnPlayPause.setText("\u25B6");
         }
     }
 
