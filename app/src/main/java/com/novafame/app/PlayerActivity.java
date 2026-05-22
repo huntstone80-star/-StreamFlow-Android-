@@ -328,6 +328,7 @@ public class PlayerActivity extends android.app.Activity {
             } catch (Exception ignored) {}
         }
 
+        player.stop();
         player.setMediaItem(builder.build());
         player.prepare();
         player.setPlayWhenReady(true);
