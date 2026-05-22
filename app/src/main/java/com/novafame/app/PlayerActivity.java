@@ -330,6 +330,7 @@ public class PlayerActivity extends android.app.Activity {
 
         player.setMediaItem(builder.build());
         player.prepare();
+        player.setPlayWhenReady(true);
         fetchAndResume();
         showControls();
     }
