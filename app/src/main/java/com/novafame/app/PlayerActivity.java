@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -21,6 +22,7 @@ import java.net.URL;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.Player;
+import androidx.media3.common.PlaybackException;
 import androidx.media3.common.util.UnstableApi;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.ui.AspectRatioFrameLayout;
@@ -230,7 +232,7 @@ public class PlayerActivity extends android.app.Activity {
                     startProgressUpdates();
                 }
                 if (playbackState == Player.STATE_ENDED) {
-                    playNextEpisode();
+                    controlsHandler.post(() -> playNextEpisode());
                 }
                 if (playbackState == Player.STATE_BUFFERING) {
                     // Could show buffering indicator
@@ -243,6 +245,18 @@ public class PlayerActivity extends android.app.Activity {
                     loadingOverlay.animate().alpha(0f).setDuration(300).withEndAction(() ->
                         loadingOverlay.setVisibility(View.GONE)).start();
                 }
+            }
+            @Override
+            public void onPlayerError(PlaybackException error) {
+                runOnUiThread(() -> {
+                    if (currentEpisodeIndex + 1 < episodeList.size()) {
+                        Toast.makeText(PlayerActivity.this, "Error loading episode, skipping...", Toast.LENGTH_SHORT).show();
+                        controlsHandler.post(() -> playNextEpisode());
+                    } else {
+                        Toast.makeText(PlayerActivity.this, "Playback error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                });
             }
         });
 
