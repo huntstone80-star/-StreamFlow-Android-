@@ -1,5 +1,5 @@
 ═══════════════════════════════════════════
- Novafame Android TV APK v2.0
+ NovaFame Android TV APK v2.0
 ═══════════════════════════════════════════
  Features:
  - Native ExoPlayer (no intent:// jump, seamless playback)
@@ -15,23 +15,17 @@
 
  Your server URL: http://192.168.100.23:3001
 
- If this IP changes, edit MainActivity.java line 127 and rebuild.
+ If this IP changes, edit MainActivity.java line 142 and rebuild.
 
 ═══════════════════════════════════════════
- BUILD WITH ANDROID STUDIO (Recommended)
+ AUTO BUILD (GitHub Actions)
 ═══════════════════════════════════════════
- 1. Open Android Studio → "Open existing project"
- 2. Select this folder (Novafame-Android)
- 3. Let Gradle sync (downloads dependencies)
- 4. Build → Build Bundle(s) / APK → Build APK
- 5. APK at app/build/outputs/apk/debug/
- 6. Sideload on TV
+ Push to main branch → auto-builds signed APK
+ APK released at: https://github.com/huntstone80-star/-StreamFlow-Android-/releases/tag/novafame-latest
 
 ═══════════════════════════════════════════
- ONLINE APK BUILDER
+ BUILD LOCALLY
 ═══════════════════════════════════════════
- Zip this folder and upload to freewebtoapk.com
- Use settings:
- - URL: http://192.168.100.23:3001
- - Orientation: Landscape
- - External Links: Open in browser
+ 1. cd app && keytool -genkey -v -keystore novafame.keystore -alias novafame -keyalg RSA -keysize 2048 -validity 10000 -storepass novafame123 -keypass novafame123 -dname "CN=NovaFame, OU=App, O=NovaFame, L=Unknown, ST=Unknown, C=US"
+ 2. ./gradlew assembleRelease
+ 3. APK at app/build/outputs/apk/release/NovaFame-Android.apk

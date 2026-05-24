@@ -9,7 +9,7 @@
         android:hardwareAccelerated="true"
         android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="Novafame"
+        android:label="NovaFame"
         android:theme="@style/NovafameTheme">
         <activity
             android:name=".MainActivity"

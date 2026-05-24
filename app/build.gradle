@@ -9,7 +9,18 @@ android {
         versionCode 2
         versionName '2.0'
     }
-    buildTypes { release { minifyEnabled false } }
+    signingConfigs {
+        release {
+            storeFile file("novafame.keystore")
+            storePassword "novafame123"
+            keyAlias "novafame"
+            keyPassword "novafame123"
+        }
+    }
+    buildTypes {
+        debug { signingConfig signingConfigs.release }
+        release { minifyEnabled false; signingConfig signingConfigs.release }
+    }
     compileOptions { sourceCompatibility JavaVersion.VERSION_11; targetCompatibility JavaVersion.VERSION_11 }
 }
 dependencies {
