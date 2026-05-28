@@ -37,11 +37,10 @@ jobs:
         run: chmod +x gradlew
       - name: Debug environment
         run: |
-          echo "=== ANDROID_HOME ==="
-          echo $ANDROID_HOME
+          echo "ANDROID_HOME=$ANDROID_HOME"
           ls -la $ANDROID_HOME/platforms/ 2>/dev/null || echo "No platforms dir"
-          echo "=== Gradle version ==="
-          ./gradlew --version --no-daemon 2>&1 || echo "Gradle --version failed"
+          echo "sdk.dir=$ANDROID_HOME" > local.properties
+          cat local.properties
       - name: Build APK
         run: |
           set -o pipefail
