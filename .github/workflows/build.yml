@@ -19,6 +19,10 @@ jobs:
         uses: android-actions/setup-android@v3
       - name: Accept SDK licenses
         run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
+      - name: Install Android SDK platform 34
+        run: |
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" || \
+          yes | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-34" || true
       - name: Generate keystore if missing
         run: |
           if [ ! -f app/novafame.keystore ]; then
