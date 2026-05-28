@@ -31,20 +31,13 @@ jobs:
           fi
       - name: Make gradlew executable
         run: chmod +x gradlew
-      - name: Debug environment
+      - name: Setup SDK and project
         run: |
-          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_STEP_SUMMARY
-          echo "platforms:" >> $GITHUB_STEP_SUMMARY
-          ls -la $ANDROID_HOME/platforms/ >> $GITHUB_STEP_SUMMARY 2>&1 || echo "No platforms dir" >> $GITHUB_STEP_SUMMARY
           echo "sdk.dir=$ANDROID_HOME" > local.properties
-      - name: Check Gradle project
+      - name: Build APK
         run: |
-          echo "=== Build file exists ==="
-          ls -la build.gradle app/build.gradle
-          echo "=== Package structure ==="
-          find app/src -name "*.java" -o -name "*.xml" | head -30
-          echo "=== Trying assembleDebug ==="
-          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee gradle.log
+          set -o pipefail
+          ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 | tee gradle.log
       - name: Upload build logs
         if: failure()
         uses: actions/upload-artifact@v4
@@ -52,25 +45,22 @@ jobs:
           name: gradle-logs
           path: gradle.log
           retention-days: 7
-      - name: Report build error
-        if: failure()
-        run: |
-          echo "## Build Failed" >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          tail -80 gradle.log >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
       - name: Rename APK
-        run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/NovaFame-Android.apk
+        run: |
+          ls -la app/build/outputs/apk/release/ 2>/dev/null && \
+          mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/NovaFame-Android.apk || \
+          ls -la app/build/outputs/apk/debug/ 2>/dev/null && \
+          cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/NovaFame-Android.apk
       - name: Upload APK as artifact
         uses: actions/upload-artifact@v4
         with:
           name: NovaFame-APK
-          path: app/build/outputs/apk/release/NovaFame-Android.apk
+          path: app/build/outputs/apk/*/NovaFame-Android.apk
           retention-days: 30
       - name: Upload APK to Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: app/build/outputs/apk/release/NovaFame-Android.apk
+          artifacts: app/build/outputs/apk/*/NovaFame-Android.apk
           tag: novafame-latest
           name: "NovaFame APK"
           body: "Latest NovaFame Android TV APK build"
