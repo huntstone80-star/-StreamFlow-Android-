@@ -23,6 +23,10 @@ import org.json.JSONObject;
 import java.net.URLEncoder;
 
 public class MainActivity extends Activity {
+    public static class Store {
+        public static String token = null;
+    }
+
     private WebView webView;
     private View loadingView;
 
@@ -69,6 +73,11 @@ public class MainActivity extends Activity {
         webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
 
         webView.addJavascriptInterface(new Object() {
+            @JavascriptInterface
+            public void storeAuthToken(String token) {
+                Store.token = token;
+            }
+
             @JavascriptInterface
             public void playVideo(String url, String title, String mediaId, String subtitlesJson) {
                 Intent intent = new Intent(MainActivity.this, PlayerActivity.class);

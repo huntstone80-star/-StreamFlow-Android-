@@ -332,12 +332,16 @@ public class PlayerActivity extends android.app.Activity {
 
     private void fetchAndResume() {
         if (mediaId.isEmpty()) return;
+        final String token = MainActivity.Store.token;
         new Thread(() -> {
             try {
                 URL url = new URL("http://192.168.100.23:3001/api/media/" + mediaId);
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5000);
+                if (token != null) {
+                    conn.setRequestProperty("Authorization", "Bearer " + token);
+                }
                 int code = conn.getResponseCode();
                 if (code != 200) { conn.disconnect(); return; }
                 java.util.Scanner s = new java.util.Scanner(conn.getInputStream()).useDelimiter("\\A");
@@ -350,6 +354,9 @@ public class PlayerActivity extends android.app.Activity {
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setConnectTimeout(5000);
+                if (token != null) {
+                    conn.setRequestProperty("Authorization", "Bearer " + token);
+                }
                 int code = conn.getResponseCode();
                 if (code != 200) { conn.disconnect(); return; }
                 java.util.Scanner s = new java.util.Scanner(conn.getInputStream()).useDelimiter("\\A");
