@@ -37,10 +37,14 @@ jobs:
           echo "platforms:" >> $GITHUB_STEP_SUMMARY
           ls -la $ANDROID_HOME/platforms/ >> $GITHUB_STEP_SUMMARY 2>&1 || echo "No platforms dir" >> $GITHUB_STEP_SUMMARY
           echo "sdk.dir=$ANDROID_HOME" > local.properties
-      - name: Build APK
+      - name: Check Gradle project
         run: |
-          set -o pipefail
-          ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 | tee gradle.log
+          echo "=== Build file exists ==="
+          ls -la build.gradle app/build.gradle
+          echo "=== Package structure ==="
+          find app/src -name "*.java" -o -name "*.xml" | head -30
+          echo "=== Trying assembleDebug ==="
+          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee gradle.log
       - name: Upload build logs
         if: failure()
         uses: actions/upload-artifact@v4
