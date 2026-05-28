@@ -94,14 +94,7 @@ public class PlayerActivity extends android.app.Activity {
                 FrameLayout.LayoutParams.MATCH_PARENT,
                 FrameLayout.LayoutParams.MATCH_PARENT));
 
-        // Loading overlay
-        loadingOverlay = new View(this);
-        loadingOverlay.setBackgroundColor(0xFF141414);
-        root.addView(loadingOverlay, new FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT));
-
-        // Custom controls overlay
+        // Custom controls overlay (includes loading overlay)
         controlsOverlay = getLayoutInflater().inflate(R.layout.player_overlay, null);
         root.addView(controlsOverlay, new FrameLayout.LayoutParams(
                 FrameLayout.LayoutParams.MATCH_PARENT,
@@ -116,6 +109,7 @@ public class PlayerActivity extends android.app.Activity {
     }
 
     private void bindViews() {
+        loadingOverlay = controlsOverlay.findViewById(R.id.loading_overlay);
         topBar = controlsOverlay.findViewById(R.id.top_bar);
         bottomBar = controlsOverlay.findViewById(R.id.bottom_bar);
         titleText = controlsOverlay.findViewById(R.id.player_title);

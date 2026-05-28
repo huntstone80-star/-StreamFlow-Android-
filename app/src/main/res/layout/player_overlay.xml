@@ -1,102 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Novafame Player Overlay -->
+<!-- NovaFame Player Overlay - Nebula Design -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Top info bar -->
-    <LinearLayout
+    <!-- Loading overlay -->
+    <FrameLayout
+        android:id="@+id/loading_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#0a0a12"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="N"
+            android:textSize="48sp"
+            android:textColor="#00E5FF"
+            android:fontFamily="sans-serif"
+            android:alpha="0.6" />
+    </FrameLayout>
+
+    <!-- Top bar: always visible -->
+    <RelativeLayout
         android:id="@+id/top_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingTop="20dp"
-        android:paddingBottom="16dp"
-        android:paddingLeft="32dp"
-        android:paddingRight="32dp"
+        android:layout_height="56dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
         android:background="@drawable/player_gradient_top">
 
         <TextView
             android:id="@+id/btn_back"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
             android:gravity="center"
-            android:textSize="22sp"
+            android:textSize="26sp"
             android:textColor="#FFFFFF"
-            android:text="&#x2715;"
+            android:text="\u2190"
             android:background="@drawable/novafame_btn_small"
             android:focusable="true"
-            android:nextFocusDown="@+id/btn_play_pause" />
+            android:nextFocusDown="@id/btn_rewind" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginLeft="20dp">
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="72dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/player_title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp"
+                android:textSize="18sp"
                 android:maxLines="1"
                 android:ellipsize="end"
-                android:text="Novafame"
+                android:text="Now Playing"
                 android:fontFamily="sans-serif-medium" />
 
             <TextView
                 android:id="@+id/player_episode_counter"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textColor="#888888"
-                android:textSize="13sp"
-                android:layout_marginTop="2dp"
-                android:text="" />
+                android:textColor="#00E5FF"
+                android:textSize="11sp"
+                android:layout_marginTop="1dp"
+                android:text=""
+                android:fontFamily="sans-serif" />
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
     <!-- Center play/pause animation -->
     <ImageView
         android:id="@+id/play_pause_center"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         android:layout_gravity="center"
         android:visibility="gone"
         android:background="@drawable/novafame_btn_large"
-        android:padding="20dp"
+        android:padding="18dp"
         android:scaleType="centerInside" />
 
-    <!-- Bottom controls panel -->
+    <!-- Bottom panel: floating glass card -->
     <LinearLayout
         android:id="@+id/bottom_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:orientation="vertical"
-        android:paddingTop="20dp"
-        android:paddingBottom="28dp"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
+        android:paddingTop="24dp"
+        android:paddingBottom="20dp"
         android:background="@drawable/player_gradient_bottom">
 
         <!-- Progress row -->
         <RelativeLayout
-            android:id="@+id/progress_row"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="14dp">
+            android:layout_marginBottom="10dp">
 
             <FrameLayout
                 android:id="@+id/progress_container"
                 android:layout_width="match_parent"
-                android:layout_height="4dp"
+                android:layout_height="5dp"
                 android:layout_centerVertical="true"
-                android:background="#33FFFFFF"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp">
+                android:background="#1AFFFFFF"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp">
 
                 <View
                     android:id="@+id/progress_buffered"
@@ -112,27 +128,27 @@
 
                 <View
                     android:id="@+id/progress_thumb"
-                    android:layout_width="12dp"
-                    android:layout_height="12dp"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:layout_gravity="center_vertical|left"
                     android:background="@drawable/thumb_circle"
-                    android:translationX="-6dp"
+                    android:translationX="-7dp"
                     android:visibility="visible" />
             </FrameLayout>
         </RelativeLayout>
 
-        <!-- Time row -->
+        <!-- Time labels -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="8dp">
 
             <TextView
                 android:id="@+id/current_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#FFFFFF"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:text="0:00"
                 android:fontFamily="sans-serif" />
 
@@ -141,7 +157,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="#888888"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:layout_alignParentRight="true"
                 android:text="0:00"
                 android:fontFamily="sans-serif" />
@@ -151,18 +167,18 @@
         <LinearLayout
             android:id="@+id/controls_row"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
+            android:layout_height="60dp"
             android:orientation="horizontal"
             android:gravity="center"
             android:background="@drawable/novafame_glass_panel"
-            android:padding="6dp">
+            android:padding="4dp">
 
             <TextView
                 android:id="@+id/btn_previous"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:gravity="center"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textColor="#FFFFFF"
                 android:text="\u23EE"
                 android:background="@drawable/novafame_btn_small"
@@ -172,13 +188,13 @@
 
             <TextView
                 android:id="@+id/btn_rewind"
-                android:layout_width="52dp"
-                android:layout_height="44dp"
+                android:layout_width="56dp"
+                android:layout_height="48dp"
                 android:gravity="center"
-                android:textSize="16sp"
+                android:textSize="13sp"
                 android:textColor="#FFFFFF"
-                android:text="\u23EA 10s"
-                android:layout_marginLeft="8dp"
+                android:text="\u23EA 30s"
+                android:layout_marginLeft="6dp"
                 android:background="@drawable/novafame_btn_small"
                 android:focusable="true"
                 android:nextFocusLeft="@id/btn_previous"
@@ -186,14 +202,14 @@
 
             <TextView
                 android:id="@+id/btn_play_pause"
-                android:layout_width="56dp"
-                android:layout_height="44dp"
+                android:layout_width="60dp"
+                android:layout_height="48dp"
                 android:gravity="center"
-                android:textSize="22sp"
+                android:textSize="24sp"
                 android:textColor="#FFFFFF"
                 android:text="\u25B6"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:background="@drawable/novafame_btn_play"
                 android:focusable="true"
                 android:nextFocusLeft="@id/btn_rewind"
@@ -201,13 +217,13 @@
 
             <TextView
                 android:id="@+id/btn_forward"
-                android:layout_width="52dp"
-                android:layout_height="44dp"
+                android:layout_width="56dp"
+                android:layout_height="48dp"
                 android:gravity="center"
-                android:textSize="16sp"
+                android:textSize="13sp"
                 android:textColor="#FFFFFF"
                 android:text="30s \u23E9"
-                android:layout_marginRight="8dp"
+                android:layout_marginRight="6dp"
                 android:background="@drawable/novafame_btn_small"
                 android:focusable="true"
                 android:nextFocusLeft="@id/btn_play_pause"
@@ -215,10 +231,10 @@
 
             <TextView
                 android:id="@+id/btn_next"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:gravity="center"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:textColor="#FFFFFF"
                 android:text="\u23ED"
                 android:background="@drawable/novafame_btn_small"
@@ -226,42 +242,30 @@
                 android:nextFocusLeft="@id/btn_forward"
                 android:nextFocusRight="@id/btn_previous" />
         </LinearLayout>
-
-        <!-- Hint text -->
-        <TextView
-            android:id="@+id/hint_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:textColor="#555555"
-            android:textSize="11sp"
-            android:text="\u2190\u2192 Seek   \u2191\u2193 Volume   OK Play   \u23CE Back"
-            android:visibility="gone" />
     </LinearLayout>
 
     <!-- Volume indicator -->
     <LinearLayout
         android:id="@+id/volume_indicator"
-        android:layout_width="40dp"
-        android:layout_height="140dp"
+        android:layout_width="36dp"
+        android:layout_height="130dp"
         android:layout_gravity="right|center_vertical"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="24dp"
         android:orientation="vertical"
         android:gravity="center"
         android:background="@drawable/novafame_glass_panel"
-        android:padding="8dp"
+        android:padding="6dp"
         android:visibility="gone">
 
         <FrameLayout
             android:layout_width="4dp"
-            android:layout_height="90dp"
-            android:background="#33FFFFFF">
+            android:layout_height="80dp"
+            android:background="#1AFFFFFF">
 
             <View
                 android:id="@+id/volume_level"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="40dp"
                 android:layout_gravity="bottom"
                 android:background="#00E5FF" />
         </FrameLayout>
@@ -271,19 +275,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
-            android:textSize="12sp"
-            android:layout_marginTop="6dp"
+            android:textSize="10sp"
+            android:layout_marginTop="4dp"
             android:text="50" />
     </LinearLayout>
 
-    <!-- Episode change card -->
+    <!-- Episode change toast -->
     <FrameLayout
         android:id="@+id/episode_change_overlay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:background="@drawable/player_gradient_top"
-        android:padding="20dp"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="200dp"
+        android:background="@drawable/novafame_glass_panel"
+        android:padding="16dp 24dp"
         android:visibility="gone">
 
         <LinearLayout
@@ -296,8 +301,8 @@
                 android:id="@+id/episode_change_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="#00E5FF"
-                android:textSize="16sp"
+                android:textColor="#C084FC"
+                android:textSize="14sp"
                 android:text="Next Episode"
                 android:fontFamily="sans-serif-medium" />
 
@@ -305,9 +310,11 @@
                 android:id="@+id/episode_change_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:textColor="#C084FC"
-                android:textSize="13sp"
+                android:layout_marginTop="4dp"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:text="" />
         </LinearLayout>
     </FrameLayout>
