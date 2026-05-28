@@ -17,14 +17,10 @@ jobs:
           java-version: 17
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          packages: 'tools platform-tools platforms;android-34'
       - name: Accept SDK licenses
         run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
-      - name: Install Android SDK platform 34
-        run: |
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "platforms;android-34" || \
-          yes | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=$ANDROID_HOME "platforms;android-34" || true
-          echo "=== Installed SDK platforms ==="
-          ls -la $ANDROID_HOME/platforms/ 2>/dev/null || echo "No platforms dir"
       - name: Generate keystore if missing
         run: |
           if [ ! -f app/novafame.keystore ]; then
@@ -37,14 +33,14 @@ jobs:
         run: chmod +x gradlew
       - name: Debug environment
         run: |
-          echo "ANDROID_HOME=$ANDROID_HOME"
-          ls -la $ANDROID_HOME/platforms/ 2>/dev/null || echo "No platforms dir"
+          echo "ANDROID_HOME=$ANDROID_HOME" >> $GITHUB_STEP_SUMMARY
+          echo "platforms:" >> $GITHUB_STEP_SUMMARY
+          ls -la $ANDROID_HOME/platforms/ >> $GITHUB_STEP_SUMMARY 2>&1 || echo "No platforms dir" >> $GITHUB_STEP_SUMMARY
           echo "sdk.dir=$ANDROID_HOME" > local.properties
-          cat local.properties
       - name: Build APK
         run: |
           set -o pipefail
-          ./gradlew assembleRelease --no-daemon --stacktrace --info 2>&1 | tee gradle.log
+          ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 | tee gradle.log
       - name: Upload build logs
         if: failure()
         uses: actions/upload-artifact@v4
@@ -52,6 +48,13 @@ jobs:
           name: gradle-logs
           path: gradle.log
           retention-days: 7
+      - name: Report build error
+        if: failure()
+        run: |
+          echo "## Build Failed" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -80 gradle.log >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
       - name: Rename APK
         run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/NovaFame-Android.apk
       - name: Upload APK as artifact
