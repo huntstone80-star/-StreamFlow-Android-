@@ -30,7 +30,16 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
       - name: Build APK
-        run: ./gradlew assembleRelease --no-daemon --stacktrace
+        run: |
+          set -o pipefail
+          ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 | tee gradle.log
+      - name: Upload build logs
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gradle-logs
+          path: gradle.log
+          retention-days: 7
       - name: Rename APK
         run: mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/NovaFame-Android.apk
       - name: Upload APK as artifact
