@@ -21,8 +21,10 @@ jobs:
         run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
       - name: Install Android SDK platform 34
         run: |
-          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" || \
-          yes | $ANDROID_HOME/tools/bin/sdkmanager "platforms;android-34" || true
+          yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --sdk_root=$ANDROID_HOME "platforms;android-34" || \
+          yes | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=$ANDROID_HOME "platforms;android-34" || true
+          echo "=== Installed SDK platforms ==="
+          ls -la $ANDROID_HOME/platforms/ 2>/dev/null || echo "No platforms dir"
       - name: Generate keystore if missing
         run: |
           if [ ! -f app/novafame.keystore ]; then
@@ -33,10 +35,17 @@ jobs:
           fi
       - name: Make gradlew executable
         run: chmod +x gradlew
+      - name: Debug environment
+        run: |
+          echo "=== ANDROID_HOME ==="
+          echo $ANDROID_HOME
+          ls -la $ANDROID_HOME/platforms/ 2>/dev/null || echo "No platforms dir"
+          echo "=== Gradle version ==="
+          ./gradlew --version --no-daemon 2>&1 || echo "Gradle --version failed"
       - name: Build APK
         run: |
           set -o pipefail
-          ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 | tee gradle.log
+          ./gradlew assembleRelease --no-daemon --stacktrace --info 2>&1 | tee gradle.log
       - name: Upload build logs
         if: failure()
         uses: actions/upload-artifact@v4
