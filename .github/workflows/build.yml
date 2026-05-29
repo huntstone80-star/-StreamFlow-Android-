@@ -30,7 +30,9 @@ jobs:
               -dname "CN=NovaFame, OU=App, O=NovaFame, L=Unknown, ST=Unknown, C=US"
           fi
       - name: Make gradlew executable
-        run: chmod +x gradlew
+        run: |
+          chmod +x gradlew
+          sed -i 's/\r$//' gradlew  # Fix CRLF line endings for Linux runner
       - name: Setup SDK and project
         run: |
           echo "sdk.dir=$ANDROID_HOME" > local.properties
