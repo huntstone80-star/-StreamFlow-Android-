@@ -35,7 +35,9 @@ jobs:
         run: |
           echo "sdk.dir=$ANDROID_HOME" > local.properties
       - name: Build APK
-        run: ./gradlew assembleRelease --no-daemon --stacktrace 2>&1 | tee gradle.log
+        run: |
+          ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee gradle.log
+          exit ${PIPESTATUS[0]}
       - name: Upload build logs
         if: failure()
         uses: actions/upload-artifact@v4
@@ -45,10 +47,15 @@ jobs:
           retention-days: 7
       - name: Rename APK
         run: |
-          ls -la app/build/outputs/apk/release/ 2>/dev/null && \
-          mv app/build/outputs/apk/release/app-release.apk app/build/outputs/apk/release/NovaFame-Android.apk || \
-          ls -la app/build/outputs/apk/debug/ 2>/dev/null && \
-          cp app/build/outputs/apk/debug/app-debug.apk app/build/outputs/apk/debug/NovaFame-Android.apk
+          APK=$(find app/build/outputs -name "*.apk" -type f | head -1)
+          if [ -n "$APK" ]; then
+            DIR=$(dirname "$APK")
+            cp "$APK" "$DIR/NovaFame-Android.apk"
+            echo "APK: $APK -> $DIR/NovaFame-Android.apk"
+          else
+            echo "No APK found!"
+            exit 1
+          fi
       - name: Upload APK as artifact
         uses: actions/upload-artifact@v4
         with:
