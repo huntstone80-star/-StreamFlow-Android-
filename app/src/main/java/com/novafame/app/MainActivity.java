@@ -2,10 +2,15 @@ package com.novafame.app;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -94,6 +99,35 @@ public class MainActivity extends Activity {
                 intent.putExtra("episodes", episodesJson);
                 intent.putExtra("mediaId", currentMediaId != null ? currentMediaId : "");
                 startActivity(intent);
+            }
+
+            @JavascriptInterface
+            public void downloadApk(String url) {
+                DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+                DownloadManager.Request req = new DownloadManager.Request(Uri.parse(url));
+                req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                req.setTitle("NovaFame Update");
+                req.setDescription("Downloading APK...");
+                req.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "NovaFame-Android.apk");
+                long downloadId = dm.enqueue(req);
+                BroadcastReceiver onComplete = new BroadcastReceiver() {
+                    @Override
+                    public void onReceive(Context context, Intent intent) {
+                        long id = intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1);
+                        if (id == downloadId) {
+                            Uri uri = dm.getUriForDownloadedFile(downloadId);
+                            if (uri != null) {
+                                Intent install = new Intent(Intent.ACTION_VIEW);
+                                install.setDataAndType(uri, "application/vnd.android.package-archive");
+                                install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                                install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(install);
+                            }
+                            try { unregisterReceiver(this); } catch (Exception ignored) {}
+                        }
+                    }
+                };
+                registerReceiver(onComplete, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
             }
         }, "AndroidBridge");
 
