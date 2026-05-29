@@ -32,7 +32,7 @@ jobs:
       - name: Make gradlew executable
         run: |
           chmod +x gradlew
-          sed -i 's/\r$//' gradlew  # Fix CRLF line endings for Linux runner
+          sed -i 's/\x0D$//' gradlew  # Fix CRLF line endings for Linux runner
       - name: Setup SDK and project
         run: |
           echo "sdk.dir=$ANDROID_HOME" > local.properties
