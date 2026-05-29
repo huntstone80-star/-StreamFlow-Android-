@@ -89,9 +89,10 @@ public class MainActivity extends Activity {
             }
 
             @JavascriptInterface
-            public void playEpisodeList(String episodesJson) {
+            public void playEpisodeList(String episodesJson, String currentMediaId) {
                 Intent intent = new Intent(MainActivity.this, PlayerActivity.class);
                 intent.putExtra("episodes", episodesJson);
+                intent.putExtra("mediaId", currentMediaId != null ? currentMediaId : "");
                 startActivity(intent);
             }
         }, "AndroidBridge");

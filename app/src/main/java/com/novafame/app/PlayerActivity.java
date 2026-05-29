@@ -528,15 +528,45 @@ public class PlayerActivity extends android.app.Activity {
     };
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER || keyCode == KeyEvent.KEYCODE_ENTER || keyCode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE) {
-            if (player != null && controlsVisible) {
-                togglePlayPause();
-            } else {
-                showControls();
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (event.getKeyCode()) {
+                case KeyEvent.KEYCODE_BACK:
+                case KeyEvent.KEYCODE_ESCAPE:
+                    finish();
+                    return true;
+                case KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE:
+                    togglePlayPause();
+                    return true;
+                case KeyEvent.KEYCODE_DPAD_CENTER:
+                case KeyEvent.KEYCODE_ENTER:
+                    if (player != null && controlsVisible) {
+                        togglePlayPause();
+                    } else {
+                        showControls();
+                    }
+                    return true;
+                case KeyEvent.KEYCODE_MEDIA_NEXT:
+                    playNextEpisode();
+                    return true;
+                case KeyEvent.KEYCODE_MEDIA_PREVIOUS:
+                    playPreviousEpisode();
+                    return true;
+                case KeyEvent.KEYCODE_MEDIA_REWIND:
+                    seekRelative(-30000);
+                    return true;
+                case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
+                    seekRelative(30000);
+                    return true;
             }
-            return true;
         }
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        // Direction keys need onKeyDown fallback so focus navigation on buttons still works
+        // (dispatchKeyEvent lets them reach the view hierarchy first)
         if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) {
             if (player != null) {
                 if (!controlsVisible) showControls();
@@ -567,26 +597,6 @@ public class PlayerActivity extends android.app.Activity {
                 showVolumeIndicator(vol);
                 if (!controlsVisible) showControls();
             }
-            return true;
-        }
-        if (keyCode == KeyEvent.KEYCODE_BACK || keyCode == KeyEvent.KEYCODE_ESCAPE) {
-            finish();
-            return true;
-        }
-        if (keyCode == KeyEvent.KEYCODE_MEDIA_NEXT) {
-            playNextEpisode();
-            return true;
-        }
-        if (keyCode == KeyEvent.KEYCODE_MEDIA_PREVIOUS) {
-            playPreviousEpisode();
-            return true;
-        }
-        if (keyCode == KeyEvent.KEYCODE_MEDIA_REWIND) {
-            seekRelative(-30000);
-            return true;
-        }
-        if (keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
-            seekRelative(30000);
             return true;
         }
         return super.onKeyDown(keyCode, event);
