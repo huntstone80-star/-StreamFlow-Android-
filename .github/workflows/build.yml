@@ -40,6 +40,11 @@ jobs:
         run: |
           ./gradlew assembleDebug --no-daemon --stacktrace 2>&1 | tee gradle.log
           exit ${PIPESTATUS[0]}
+      - name: Surface Gradle error
+        if: failure()
+        run: |
+          echo "### Gradle build failed — last 50 lines of log:" >> $GITHUB_STEP_SUMMARY
+          tail -50 gradle.log >> $GITHUB_STEP_SUMMARY
       - name: Upload build logs
         if: failure()
         uses: actions/upload-artifact@v4
