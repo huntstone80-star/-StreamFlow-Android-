@@ -102,6 +102,11 @@ public class MainActivity extends Activity {
             }
 
             @JavascriptInterface
+            public void openUrl(String url) {
+                runOnUiThread(() -> webView.loadUrl(url));
+            }
+
+            @JavascriptInterface
             public void downloadApk(String url) {
                 DownloadManager dm = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
                 DownloadManager.Request req = new DownloadManager.Request(Uri.parse(url));
