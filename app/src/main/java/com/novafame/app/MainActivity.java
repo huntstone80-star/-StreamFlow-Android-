@@ -152,6 +152,8 @@ public class MainActivity extends Activity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
+                // Only intercept main frame navigations — let iframe navigations (video players, ads, etc.) load normally
+                if (!request.isForMainFrame()) return false;
                 if (url.startsWith("intent://")) {
                     try {
                         Intent intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME);
